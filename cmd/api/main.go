@@ -19,6 +19,7 @@ func main() {
 	r.GET("/game/proceed", handleProceed)
 	r.GET("/game/player/:id", handlePlayerSession)
 	r.GET("/game/player/:id/fold", handlePlayerFold)
+	r.GET("/game/player/:id/leave", handlePlayerLeave)
 
 	log.Fatal(r.Run(fmt.Sprintf("0.0.0.0:%d", 8080)))
 }

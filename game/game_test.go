@@ -243,6 +243,62 @@ func TestBlindsRotate(t *testing.T) {
 	}
 }
 
+func TestGameIsRestartedWhenAllFold(t *testing.T) {
+	g := game.New()
+
+	p1 := game.NewPlayer()
+	p2 := game.NewPlayer()
+
+	g.Join(p1)
+	g.Join(p2)
+
+	g.Start()
+
+	g.DealNext()
+	g.DealNext()
+	g.DealNext()
+
+	g.Fold(p1.ID)
+	g.Fold(p2.ID)
+
+	if g.Flop() != nil {
+		t.Fatal("game should have ben restarted")
+	}
+}
+
+func TestBlindsAreResetAfterPlayersLeave(t *testing.T) {
+	g := game.New()
+
+	p1 := game.NewPlayer()
+	p2 := game.NewPlayer()
+	p3 := game.NewPlayer()
+	p4 := game.NewPlayer()
+
+	g.Join(p1)
+	g.Join(p2)
+	g.Join(p3)
+	g.Join(p4)
+
+	g.Start()
+
+	g.DealNext()
+	g.Leave(p2.ID)
+	g.DealNext()
+	g.DealNext()
+
+	g.Start()
+
+	blinds := g.Blinds()
+
+	if blinds[0] != p1.ID {
+		t.Fatal("player two should have been the small blind")
+	}
+
+	if blinds[1] != p3.ID {
+		t.Fatal("player one should have been the big blind")
+	}
+}
+
 func newGameWithTwoPlayers() *game.Game {
 	g := game.New()
 

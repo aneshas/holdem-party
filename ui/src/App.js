@@ -18,7 +18,7 @@ function App() {
           <PokerTable />
         </Route>
 
-        <Route path="/player/:id/:seat" exact={true}>
+        <Route path="/player/:id" exact={true}>
           <Seat />
         </Route>
       </Switch>

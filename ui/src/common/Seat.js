@@ -8,10 +8,15 @@ import "./Seat.css";
 
 const Seat = () => {
   const [player, setPlayer] = useState(null);
-  const { id, seat } = useParams();
+  const { id } = useParams();
 
   useInterval(() => {
     playerSession(id).then((resp) => {
+      if (!resp.data?.SeatNumber) {
+        window.location.href = `/`;
+        return;
+      }
+
       setPlayer(resp.data);
     });
   }, 1000);
@@ -22,7 +27,9 @@ const Seat = () => {
 
   return (
     <Container className="seat pt-5 d-flex align-items-center flex-column">
-      <h1 className="text-warning text-uppercase">Player {seat}</h1>
+      <h1 className="text-warning text-uppercase">
+        Player {player?.SeatNumber}
+      </h1>
       {player && player.Hand && (
         <div className="hand d-flex justify-content-center mt-5">
           <Card card={player.Hand[0]} />

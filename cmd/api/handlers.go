@@ -81,7 +81,8 @@ func handleProceed(c *gin.Context) {
 }
 
 type PlayerSession struct {
-	Hand []deck.Card
+	Hand       []deck.Card
+	SeatNumber int
 }
 
 func handlePlayerSession(c *gin.Context) {
@@ -90,10 +91,11 @@ func handlePlayerSession(c *gin.Context) {
 		return
 	}
 
-	hand := g.PlayerHand(game.PlayerID(c.Param("id")))
+	id := game.PlayerID(c.Param("id"))
 
 	c.JSON(http.StatusOK, PlayerSession{
-		Hand: hand,
+		Hand:       g.PlayerHand(id),
+		SeatNumber: g.PlayerSeatNumber(id),
 	})
 }
 
@@ -110,6 +112,17 @@ func handlePlayerFold(c *gin.Context) {
 
 func handleNewGame(c *gin.Context) {
 	g = game.New()
+	c.Status(http.StatusOK)
+}
+
+func handlePlayerLeave(c *gin.Context) {
+	if g == nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	g.Leave(game.PlayerID(c.Param("id")))
+
 	c.Status(http.StatusOK)
 }
 

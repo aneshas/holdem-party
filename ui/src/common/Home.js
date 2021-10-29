@@ -4,7 +4,7 @@ import { joinGame } from "../api/api";
 const Home = () => {
   const handleJoin = () => {
     joinGame().then((resp) => {
-      window.location.href = `/player/${resp.data.PlayerID}/${resp.data.PlayerNumber}`;
+      window.location.href = `/player/${resp.data.PlayerID}`;
     });
   };
 

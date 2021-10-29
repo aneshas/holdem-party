@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { playerSession } from "../api/api";
+import { playerLeave, playerSession } from "../api/api";
 import back from "../assets/img/1B.svg";
+import backRed from "../assets/img/2B.svg";
 import Card from "./Card";
 import { useInterval } from "./hooks";
 import "./Player.css";
+import { Button } from "react-bootstrap";
 
 const Player = ({ id, number, hands, blinds, showHand = false }) => {
   const hand = hands ? hands[id] : null;
@@ -23,11 +25,21 @@ const Player = ({ id, number, hands, blinds, showHand = false }) => {
   }, 1000);
 
   const variant = holdsHand ? "text-warning" : "text-danger";
+  const img = holdsHand ? back : backRed;
+
+  const handleLeave = () => {
+    playerLeave(id).then(console.log);
+  };
 
   return (
     <div className="player px-3">
-      <div className={`text-uppercase ${variant}`}>
-        <b>Player {number + 1}</b>
+      <div
+        className={`text-uppercase ${variant} d-flex justify-content-between align-items-center`}
+      >
+        <b>P{number + 1}</b>
+        <Button onClick={handleLeave} variant="link" className="text-danger">
+          Remove
+        </Button>
       </div>
       {showHand && hand ? (
         <div className="d-flex hand">
@@ -36,8 +48,8 @@ const Player = ({ id, number, hands, blinds, showHand = false }) => {
         </div>
       ) : (
         <div>
-          <img src={back} alt="card" />
-          <img src={back} alt="card" />
+          <img src={img} alt="card" />
+          <img src={img} alt="card" />
         </div>
       )}
 

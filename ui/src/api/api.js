@@ -8,6 +8,8 @@ export const newGame = () => axios.get(baseUrl + "/game/new");
 export const joinGame = () => axios.get(baseUrl + "/game/join");
 export const startGame = () => axios.get(baseUrl + "/game/start");
 export const playerSession = (id) => axios.get(baseUrl + `/game/player/${id}`);
+export const playerLeave = (id) =>
+  axios.get(baseUrl + `/game/player/${id}/leave`);
 export const playerFold = (id) =>
   axios.get(baseUrl + `/game/player/${id}/fold`);
 export const proceedWithGame = () => axios.get(baseUrl + "/game/proceed");

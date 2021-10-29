@@ -20,14 +20,15 @@ func New() *Game {
 }
 
 type Game struct {
-	Started bool
-	players []*Player
-	hands   Hands
-	deck    *deck.Deck
-	flop    Flop
-	turn    *deck.Card
-	river   *deck.Card
-	blinds  []PlayerID
+	Started     bool
+	players     []*Player
+	hands       Hands
+	deck        *deck.Deck
+	flop        Flop
+	turn        *deck.Card
+	river       *deck.Card
+	blinds      []PlayerID
+	playersLeft bool
 }
 
 type Hand []deck.Card
@@ -52,19 +53,23 @@ func (g *Game) Start() error {
 	g.flop = nil
 	g.turn = nil
 	g.river = nil
+	g.playersLeft = false
 
 	return nil
 }
 
 func (g *Game) setBlinds() {
+	if g.playersLeft {
+		g.blinds = nil
+	}
+
 	if g.blinds == nil || len(g.blinds) == 0 {
 		g.blinds = []PlayerID{g.players[0].ID, g.players[1].ID}
 
 		return
 	}
 
-	small := g.blinds[0]
-	big := g.blinds[1]
+	small, big := g.blinds[0], g.blinds[1]
 
 	g.setBlind(0, small)
 	g.setBlind(1, big)
@@ -175,6 +180,13 @@ func (g *Game) River() *deck.Card { return g.river }
 
 func (g *Game) Fold(id PlayerID) {
 	delete(g.hands, id)
+
+	if g.Started && len(g.hands) == 0 {
+		g.DealNext()
+		g.DealNext()
+		g.DealNext()
+		g.Start()
+	}
 }
 
 func (g *Game) Players() []*Player { return g.players }
@@ -187,4 +199,31 @@ func (g *Game) PlayerHand(id PlayerID) Hand {
 	return nil
 }
 
+func (g *Game) PlayerSeatNumber(id PlayerID) int {
+	for i, p := range g.players {
+		if p.ID == id {
+			return i + 1
+		}
+	}
+
+	return 0
+}
+
 func (g *Game) Blinds() []PlayerID { return g.blinds }
+
+func (g *Game) Leave(id PlayerID) {
+	g.Fold(id)
+
+	var newPlayers []*Player
+
+	for _, p := range g.players {
+		if id == p.ID {
+			continue
+		}
+
+		newPlayers = append(newPlayers, p)
+	}
+
+	g.players = newPlayers
+	g.playersLeft = true
+}
