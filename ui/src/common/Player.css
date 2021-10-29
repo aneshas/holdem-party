@@ -1,0 +1,8 @@
+.player img {
+  width: 100px;
+}
+
+.player img + img,
+.player .hand > div + div {
+  margin-left: -50px;
+}

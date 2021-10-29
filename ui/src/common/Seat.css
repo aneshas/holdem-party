@@ -1,0 +1,7 @@
+.seat img {
+  width: 150px;
+}
+
+.seat .hand > div + div {
+  margin-left: -100px;
+}
