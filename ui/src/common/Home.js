@@ -1,18 +1,18 @@
 import { Container, Button } from "react-bootstrap";
-import { joinGame } from "../api/api";
+import { newGame } from "../api/api";
 
 const Home = () => {
-  const handleJoin = () => {
-    joinGame().then((resp) => {
-      window.location.href = `/player/${resp.data.PlayerID}`;
+  const handleNew = () => {
+    newGame().then((resp) => {
+      window.location.href = `/table/${resp.data.ID}`;
     });
   };
 
   return (
     <Container fluid className="text-center pt-5">
       <h1 className="text-white">Texas HoldEm Poker</h1>
-      <Button onClick={handleJoin} size="lg" variant="warning" className="my-3">
-        Click to Join
+      <Button onClick={handleNew} size="lg" variant="warning" className="my-3">
+        New Game
       </Button>
     </Container>
   );

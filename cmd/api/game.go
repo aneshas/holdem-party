@@ -5,9 +5,8 @@ import (
 	"github.com/aneshas/holdem/game"
 )
 
-var g *game.Game
-
 type GameState struct {
+	ID        string
 	Players   []*game.Player
 	Flop      game.Flop
 	Turn      *deck.Card
@@ -19,6 +18,7 @@ type GameState struct {
 
 func mapGameState(g *game.Game) GameState {
 	return GameState{
+		ID:        string(g.ID),
 		Players:   g.Players(),
 		Flop:      g.Flop(),
 		Turn:      g.Turn(),

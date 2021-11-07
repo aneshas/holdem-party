@@ -8,10 +8,10 @@ import "./Seat.css";
 
 const Seat = () => {
   const [player, setPlayer] = useState(null);
-  const { id } = useParams();
+  const { id, pid } = useParams();
 
   useInterval(() => {
-    playerSession(id).then((resp) => {
+    playerSession(id, pid).then((resp) => {
       if (!resp.data?.SeatNumber) {
         window.location.href = `/`;
         return;
@@ -22,7 +22,7 @@ const Seat = () => {
   }, 1000);
 
   const handleFold = () => {
-    playerFold(id).then(console.log);
+    playerFold(id, pid).then(console.log);
   };
 
   return (

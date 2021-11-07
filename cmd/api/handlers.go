@@ -13,7 +13,7 @@ type Error struct {
 }
 
 func handleGame(c *gin.Context) {
-	createGame()
+	g := store.Find(game.ID(c.Param("id")))
 
 	state := mapGameState(g)
 
@@ -26,9 +26,10 @@ type JoinedPlayer struct {
 }
 
 func handleJoin(c *gin.Context) {
-	createGame()
+	g := store.Find(game.ID(c.Param("id")))
 
 	p := game.NewPlayer()
+
 	num, err := g.Join(p)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, Error{
@@ -45,10 +46,7 @@ func handleJoin(c *gin.Context) {
 }
 
 func handleStart(c *gin.Context) {
-	if g == nil {
-		c.Status(http.StatusBadRequest)
-		return
-	}
+	g := store.Find(game.ID(c.Param("id")))
 
 	err := g.Start()
 	if err != nil {
@@ -63,10 +61,7 @@ func handleStart(c *gin.Context) {
 }
 
 func handleProceed(c *gin.Context) {
-	if g == nil {
-		c.Status(http.StatusBadRequest)
-		return
-	}
+	g := store.Find(game.ID(c.Param("id")))
 
 	err := g.DealNext()
 	if err != nil {
@@ -86,12 +81,9 @@ type PlayerSession struct {
 }
 
 func handlePlayerSession(c *gin.Context) {
-	if g == nil {
-		c.Status(http.StatusBadRequest)
-		return
-	}
+	g := store.Find(game.ID(c.Param("id")))
 
-	id := game.PlayerID(c.Param("id"))
+	id := game.PlayerID(c.Param("pid"))
 
 	c.JSON(http.StatusOK, PlayerSession{
 		Hand:       g.PlayerHand(id),
@@ -100,34 +92,35 @@ func handlePlayerSession(c *gin.Context) {
 }
 
 func handlePlayerFold(c *gin.Context) {
+	g := store.Find(game.ID(c.Param("id")))
+
 	if g == nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	g.Fold(game.PlayerID(c.Param("id")))
+	g.Fold(game.PlayerID(c.Param("pid")))
 
 	c.Status(http.StatusOK)
 }
 
 func handleNewGame(c *gin.Context) {
-	g = game.New()
-	c.Status(http.StatusOK)
+	g := game.New()
+
+	store.Save(g)
+
+	c.JSON(http.StatusOK, mapGameState(g))
 }
 
 func handlePlayerLeave(c *gin.Context) {
+	g := store.Find(game.ID(c.Param("id")))
+
 	if g == nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	g.Leave(game.PlayerID(c.Param("id")))
+	g.Leave(game.PlayerID(c.Param("pid")))
 
 	c.Status(http.StatusOK)
-}
-
-func createGame() {
-	if g == nil {
-		g = game.New()
-	}
 }

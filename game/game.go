@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/aneshas/holdem/deck"
+	"github.com/google/uuid"
 )
 
 var (
@@ -15,11 +16,15 @@ var (
 
 func New() *Game {
 	return &Game{
+		ID:    ID(uuid.NewString()),
 		hands: make(Hands),
 	}
 }
 
+type ID string
+
 type Game struct {
+	ID          ID
 	Started     bool
 	players     []*Player
 	hands       Hands

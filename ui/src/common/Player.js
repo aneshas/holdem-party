@@ -7,7 +7,7 @@ import { useInterval } from "./hooks";
 import "./Player.css";
 import { Button } from "react-bootstrap";
 
-const Player = ({ id, number, hands, blinds, showHand = false }) => {
+const Player = ({ id, pid, number, hands, blinds, showHand = false }) => {
   const hand = hands ? hands[id] : null;
   const isSmall = blinds && blinds[0] === id;
   const isBig = blinds && blinds[1] === id;
@@ -15,7 +15,7 @@ const Player = ({ id, number, hands, blinds, showHand = false }) => {
   const [holdsHand, setHoldsHand] = useState(false);
 
   useInterval(() => {
-    playerSession(id).then((resp) => {
+    playerSession(id, pid).then((resp) => {
       if (resp.data.Hand) {
         setHoldsHand(true);
       } else {
@@ -28,7 +28,7 @@ const Player = ({ id, number, hands, blinds, showHand = false }) => {
   const img = holdsHand ? back : backRed;
 
   const handleLeave = () => {
-    playerLeave(id).then(console.log);
+    playerLeave(id, pid).then(console.log);
   };
 
   return (

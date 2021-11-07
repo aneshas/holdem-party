@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
 import Home from "./common/Home";
+import JoinGame from "./common/JoinGame";
 import Seat from "./common/Seat";
 import PokerTable from "./common/Table";
 
@@ -14,11 +15,15 @@ function App() {
           <Home />
         </Route>
 
-        <Route path="/table" exact={true}>
+        <Route path="/table/:id" exact={true}>
           <PokerTable />
         </Route>
 
-        <Route path="/player/:id" exact={true}>
+        <Route path="/table/:id/join" exact={true}>
+          <JoinGame />
+        </Route>
+
+        <Route path="/table/:id/player/:pid" exact={true}>
           <Seat />
         </Route>
       </Switch>

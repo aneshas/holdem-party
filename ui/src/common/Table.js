@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, Container } from "react-bootstrap";
+import { useParams } from "react-router";
 import { fetchGame, newGame, proceedWithGame, startGame } from "../api/api";
 import Card, { DeckCard } from "./Card";
 import { useInterval } from "./hooks";
@@ -7,9 +8,10 @@ import Player from "./Player";
 
 const PokerTable = () => {
   const [game, setGame] = useState({});
+  const { id } = useParams();
 
   useInterval(() => {
-    fetchGame().then((resp) => {
+    fetchGame(id).then((resp) => {
       if (!resp.data) {
         return;
       }
@@ -21,6 +23,10 @@ const PokerTable = () => {
   const haveMinimumPlayers = () => game.Players && game.Players.length > 1;
   return (
     <>
+      <small className="text-center text-white p-1">
+        <b>Join Link: </b> {`http://localhost:3000/table/${id}/join`}
+      </small>
+
       <Container fluid className="mt-5">
         <div
           className="d-flex justify-content-center"
@@ -35,7 +41,8 @@ const PokerTable = () => {
                 blinds={game.Blinds}
                 showHand={!game.IsStarted}
                 key={i}
-                id={p.ID}
+                id={id}
+                pid={p.ID}
                 number={i}
               />
             );
@@ -60,9 +67,9 @@ const PokerTable = () => {
       </Container>
 
       <Container fluid className="d-flex  align-items-center flex-column">
-        {game.IsStarted && <NextButton />}
+        {game.IsStarted && <NextButton id={id} />}
         {game.IsStarted && <NewGameButton />}
-        {!game.IsStarted && haveMinimumPlayers() && <StartButton />}
+        {!game.IsStarted && haveMinimumPlayers() && <StartButton id={id} />}
         {!haveMinimumPlayers() && (
           <span className="text-info">
             At least two players needed to start the game
@@ -74,20 +81,22 @@ const PokerTable = () => {
 };
 
 const NewGameButton = () => {
-  const handleClick = () => {
-    newGame().then(console.log);
+  const handleNew = () => {
+    newGame().then((resp) => {
+      window.open(`/table/${resp.data.ID}`, "_blank");
+    });
   };
 
   return (
-    <Button className="mt-5" onClick={handleClick} variant="danger" size="lg">
+    <Button className="mt-5" onClick={handleNew} variant="danger" size="lg">
       New Game
     </Button>
   );
 };
 
-const NextButton = () => {
+const NextButton = ({ id }) => {
   const handleClick = () => {
-    proceedWithGame().then(console.log);
+    proceedWithGame(id).then(console.log);
   };
 
   return (
@@ -97,9 +106,9 @@ const NextButton = () => {
   );
 };
 
-const StartButton = () => {
+const StartButton = ({ id }) => {
   const handleClick = () => {
-    startGame().then(console.log);
+    startGame(id).then(console.log);
   };
 
   return (
