@@ -15,6 +15,7 @@ var (
 )
 
 func New() *Game {
+
 	return &Game{
 		ID:    ID(uuid.NewString()),
 		hands: make(Hands),
@@ -104,10 +105,29 @@ func (g *Game) dealHands() {
 		g.hands[p.ID] = []deck.Card{}
 	}
 
-	for i := 0; i < 2; i++ {
+	players := []PlayerID{}
+
+	found := false
+
+outer:
+	for {
 		for _, p := range g.players {
+			if found && p.ID == g.blinds[0] {
+				break outer
+			} else if p.ID == g.blinds[0] {
+				found = true
+			}
+
+			if found {
+				players = append(players, p.ID)
+			}
+		}
+	}
+
+	for i := 0; i < 2; i++ {
+		for _, id := range players {
 			card, _ := g.deck.DrawTop()
-			g.hands[p.ID] = append(g.hands[p.ID], card)
+			g.hands[id] = append(g.hands[id], card)
 		}
 	}
 }

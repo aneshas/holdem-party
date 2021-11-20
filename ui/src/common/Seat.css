@@ -2,6 +2,11 @@
   width: 150px;
 }
 
-.seat .hand > div + div {
+.seat .hand > div + div,
+.seat .hand > img + img {
   margin-left: -100px;
+}
+
+body {
+  overscroll-behavior-y: contain;
 }

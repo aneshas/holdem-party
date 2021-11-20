@@ -5,6 +5,7 @@ import { playerFold, playerSession } from "../api/api";
 import Card from "./Card";
 import { useInterval } from "./hooks";
 import "./Seat.css";
+import img from "../assets/img/1B.svg";
 
 const Seat = () => {
   const [player, setPlayer] = useState(null);
@@ -30,12 +31,8 @@ const Seat = () => {
       <h1 className="text-warning text-uppercase">
         Player {player?.SeatNumber}
       </h1>
-      {player && player.Hand && (
-        <div className="hand d-flex justify-content-center mt-5">
-          <Card card={player.Hand[0]} />
-          <Card card={player.Hand[1]} />
-        </div>
-      )}
+
+      {player && player.Hand && <Hand hand={player.Hand} />}
 
       {player && player.Hand && (
         <Button
@@ -52,6 +49,28 @@ const Seat = () => {
         <span className="text-info">Please wait for the next round</span>
       )}
     </Container>
+  );
+};
+
+const Hand = ({ hand }) => {
+  const [show, setShow] = useState(false);
+
+  return (
+    <div onTouchStart={() => setShow(true)} onTouchEnd={() => setShow(false)}>
+      {show && (
+        <div className="hand d-flex justify-content-center mt-5">
+          <Card card={hand[0]} />
+          <Card card={hand[1]} />
+        </div>
+      )}
+
+      {!show && (
+        <div className="hand d-flex justify-content-center mt-5">
+          <img src={img} alt="card" />
+          <img src={img} alt="card" />
+        </div>
+      )}
+    </div>
   );
 };
 
